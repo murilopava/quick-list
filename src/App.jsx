@@ -35,10 +35,10 @@ function App() {
   }
 
   return (
-    <form className="max-w-96 w-full flex flex-col items-center gap-4" onSubmit={(enter) => (enter.preventDefault())}>
+    <form className="max-w-120 w-full flex flex-col items-center gap-4" onSubmit={(enter) => (enter.preventDefault())}>
       <h1 className="text-4xl font-bold">Lista de Mercado</h1>
 
-      <div className="w-full flex gap-2">
+      <div className="w-120 flex gap-2">
         <input className="w-full border border-gray-600 rounded-md px-2" ref={inputAdicionar} type="text" placeholder="Digite um item" onChange={() => (setErro(""))}/>
         <button className="rounded-md bg-gray-800 text-white px-2 cursor-pointer hover:bg-gray-500 transition" type="submit" onClick={() => adicionarElementoNaLista()}>Adicionar</button>
       </div>

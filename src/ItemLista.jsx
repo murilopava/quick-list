@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 const ItemLista = ({itemLista, listaMercado, setListaMercado, setErro}) => {
 
   const [quant, setQuant] = useState(1);
+  const [itemComprado, setItemComprado] = useState(false);
   
   const removerItemDaLista = () => {
     const novaLista = [...listaMercado];
@@ -12,12 +13,16 @@ const ItemLista = ({itemLista, listaMercado, setListaMercado, setErro}) => {
 
   return (
     <>
-    <li className='flex gap-2 justify-center items-center w-full'>
-        <label htmlFor="quant" className='flex w-80 items-center'>
-          <p className='text-xl px-2'>{itemLista}</p>
+    <li className='flex gap-2 w-full align-items-center'>
+        <label htmlFor="quant" className='flex w-full min-w-0 items-center'>
+          <p className={`text-xl px-2 wrap-break-word max-w-65 ${itemComprado ? 'line-through decoration-4 text-gray-500' : ''}`}>{itemLista}</p>
         </label>
-      <button className="rounded-md bg-red-600 text-white px-2 cursor-pointer hover:bg-red-500 transition" onClick={() => {setErro(""); removerItemDaLista()}}>Remover</button>
+        
       <div className='flex gap-2 items-center'>
+        <button className={`w-6 h-6 rounded-full transition-colors ${itemComprado ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'} cursor-pointer`} onClick={() => setItemComprado((c) => c === false ? true : false)}>{itemComprado ? '✔️' : '❌'}</button>
+
+        <button className="rounded-md bg-red-600 text-white px-2 cursor-pointer hover:bg-red-500 transition" onClick={() => {setErro(""); removerItemDaLista()}}>Remover</button>
+
         <input className='p-0 border border-gray-300 rounded-sm w-10 align-center text-center' type="number" value={quant} onChange={(e) => setQuant(Number(e.target.value))} max={20} min={0} name="quant" id="quantidade" onKeyDown={(e) => e.preventDefault()} />
 
         <button className="rounded-md bg-blue-600 text-white font-bold px-2 cursor-pointer hover:bg-blue-500 transition" onClick={() => setQuant((q) => q < 20 ? q + 1 : q)}>+</button>
@@ -29,3 +34,4 @@ const ItemLista = ({itemLista, listaMercado, setListaMercado, setErro}) => {
 }
 
 export default ItemLista
+
