@@ -21,7 +21,7 @@ const ItemLista = ({itemLista, listaMercado, setListaMercado, setErro}) => {
       <div className='flex gap-2 items-center'>
         <button className={`w-6 h-6 rounded-full transition-colors ${itemComprado ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'} cursor-pointer`} onClick={() => setItemComprado((c) => c === false ? true : false)}>{itemComprado ? '✔️' : '❌'}</button>
 
-        <button className="rounded-md bg-red-600 text-white px-2 cursor-pointer hover:bg-red-500 transition" onClick={() => {setErro(""); removerItemDaLista()}}>Remover</button>
+        <button className={`rounded-md ${itemComprado ? 'bg-red-600 cursor-pointer hover:bg-red-500 transition' : 'bg-gray-500 cursor-not-allowed'} text-white px-2`} disabled={!itemComprado} onClick={() => {setErro(""); removerItemDaLista()}}>Remover</button>
 
         <input className='p-0 border border-gray-300 rounded-sm w-10 align-center text-center' type="number" value={quant} onChange={(e) => setQuant(Number(e.target.value))} max={20} min={0} name="quant" id="quantidade" onKeyDown={(e) => e.preventDefault()} />
 
