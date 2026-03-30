@@ -5,33 +5,31 @@ function App() {
   // let listaMercado = ["Banana", "Maçã", "Laranja", "Ovo"];
   const [listaMercado, setListaMercado] = useState([]);
   const [erro, setErro] = useState();
-
   const inputAdicionar = useRef();
- 
-  // console.log(inputAdicionar.current);
 
   // Hook
   // useState - Cria uma variável de estado
   // useRef - Cria uma referência para um elemento do DOM
 
   const adicionarElementoNaLista = () => {
-    const novaLista = [...listaMercado];
+    const lista = [...listaMercado];
     const valorInput = inputAdicionar.current.value.trim();
 
     if (valorInput === "" ) {
       setErro("O campo não pode estar vazio");
       return;
     }
-    else if (novaLista.some(item => item.toLowerCase() === valorInput.toLowerCase())) {
+    else if (lista.some(item => item.toLowerCase() === valorInput.toLowerCase())) {
       setErro("Item já existe na lista")
       return;
     }
 
-    novaLista.push(valorInput);
-    setListaMercado(novaLista);
+    const novaLista = lista.push(valorInput) && setListaMercado(novaLista);
 
     inputAdicionar.current.value = "";
-
+    localStorage.setItem("lista", JSON.stringify(novaLista))
+    return novaLista;
+    
   }
 
   return (
