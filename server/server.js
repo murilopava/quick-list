@@ -4,6 +4,7 @@ import listsRoutes from "./routes/lists.js";
 import productsRoutes from "./routes/products.js";
 
 const server = fastify();
+
 server.register(cors, {
   origin: "*",
 });
