@@ -1,15 +1,18 @@
 import React from "react";
-import { RouterProvider } from "react-router";
-import { createBrowserRouter } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import Home from "./pages/Home";
 import Products from "./pages/Products.jsx";
 
 function App() {
-  const router = createBrowserRouter([
-    { path: "/home", element: <Home /> },
-    { path: "/products", element: <Products /> },
-  ]);
-  return <RouterProvider router={router} />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/home" replace />}></Route>
+        <Route path="/home" element={<Home />}></Route>
+        <Route path="/products" element={<Products />}></Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
