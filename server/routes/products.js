@@ -1,4 +1,3 @@
-
 export async function productsRoutes(server) {
   server.get("/products", async (request, reply) => {
     reply.status(200);

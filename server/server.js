@@ -18,8 +18,8 @@ server.get("/", (request, reply) => {
 
 server.listen({ port: 3333, host: "localhost" }, (err, address) => {
   if (err) {
-    fastify.log.error(err)
-    process.exit(1)
+    fastify.log.error(err);
+    process.exit(1);
   }
   console.log(`Servidor rodando em ${address}/lists e ${address}/products`);
-})
+});
