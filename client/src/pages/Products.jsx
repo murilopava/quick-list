@@ -53,15 +53,17 @@ function Products() {
 
       {listaMercado.length > 0 ? (
         <ul className="flex w-full flex-col gap-2">
-          {listaMercado.map((itemLista, index) => (
-            <ItemLista
-              key={index}
-              itemLista={itemLista}
-              listaMercado={listaMercado}
-              setListaMercado={setListaMercado}
-              setErro={setErro}
-            />
-          ))}
+          {listaMercado.map((itemLista, index) => {
+            return (
+              <ItemLista
+                key={index}
+                itemLista={itemLista}
+                listaMercado={listaMercado}
+                setListaMercado={setListaMercado}
+                setErro={setErro}
+              />
+            );
+          })}
         </ul>
       ) : (
         <p className="text-xl">Sua lista esta vazia!</p>
