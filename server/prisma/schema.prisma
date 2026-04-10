@@ -27,5 +27,5 @@ model Product {
   list List   @relation(fields: [listId], references: [id], onDelete: Cascade)
   name        String 
   quant       Int
-  isPurchased Boolean
+  isPurchased Boolean @default(false)
 }
