@@ -1,13 +1,16 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { FastifyInstance, FastifyRequest } from "fastify";
+import { createList } from "../db/listsDb.js";
+
+interface CreateListBody {
+  name: string;
+}
 
 export async function listsRoutes(server: FastifyInstance) {
-  server.post(
-    "/lists",
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      const name = request.body;
-      return { message: "lista" };
-    },
-  );
+  server.post<{ Body: CreateListBody }>("/lists", async (request, reply) => {
+    const { name } = request.body;
+    const { shareId } = await createList(name);
+    return { shareId };
+  });
 
   server.get("/lists/:shareId", async (request, reply) => {
     // buscar lista
