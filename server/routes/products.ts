@@ -4,7 +4,7 @@ export async function productsRoutes(server: FastifyInstance) {
   server.post(
     "/lists/:shareId/products",
     async (request: FastifyRequest, reply: FastifyReply) => {
-      const product = request.body.name;
+      const product = request.body;
 
       reply.status(200);
       return { message: "adicionar um produto" };
