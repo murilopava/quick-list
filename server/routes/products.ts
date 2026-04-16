@@ -1,10 +1,14 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
+interface CreateProductBody {
+  name: string;
+}
+
 export async function productsRoutes(server: FastifyInstance) {
-  server.post(
+  server.post<{ Body: CreateProductBody }>(
     "/lists/:shareId/products",
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      const product = request.body;
+    async (request, reply: FastifyReply) => {
+      const { name } = request.body;
 
       reply.status(200);
       return { message: "adicionar um produto" };
