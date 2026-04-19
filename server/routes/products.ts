@@ -13,7 +13,7 @@ interface ShareListParams {
 export async function productsRoutes(server: FastifyInstance) {
   server.post<{ Body: CreateProductBody; Params: ShareListParams }>(
     "/lists/:shareId/products",
-    async (request, reply: FastifyReply) => {
+    async (request, reply) => {
       const { name } = request.body;
       const shareId = request.params.shareId;
 
@@ -26,8 +26,8 @@ export async function productsRoutes(server: FastifyInstance) {
 
       const product = await addProduct(list.id, name);
 
-      reply.status(200);
-      return { message: "produto adicionado: ", product };
+      reply.status(201);
+      return product;
     },
   );
 
