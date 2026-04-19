@@ -12,7 +12,7 @@ export async function createList(name: string) {
   return list;
 }
 
-export async function getListShareId(shareId: string) {
+export async function getListByShareId(shareId: string) {
   const list = await prisma.list.findUnique({
     where: {
       shareId,
