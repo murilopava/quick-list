@@ -1,17 +1,33 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { addProduct } from "../db/productsDb.js";
+import { getListByShareId } from "../db/listsDb.js";
 
 interface CreateProductBody {
   name: string;
 }
 
+interface ShareListParams {
+  shareId: string;
+}
+
 export async function productsRoutes(server: FastifyInstance) {
-  server.post<{ Body: CreateProductBody }>(
+  server.post<{ Body: CreateProductBody; Params: ShareListParams }>(
     "/lists/:shareId/products",
     async (request, reply: FastifyReply) => {
       const { name } = request.body;
+      const shareId = request.params.shareId;
+
+      const list = await getListByShareId(shareId);
+
+      if (list === null) {
+        reply.status(404);
+        return;
+      }
+
+      const product = await addProduct(list.id, name);
 
       reply.status(200);
-      return { message: "adicionar um produto" };
+      return { message: "produto adicionado: ", product };
     },
   );
 
