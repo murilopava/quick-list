@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { addProduct } from "../db/productsDb.js";
+import { addProduct, updateProduct } from "../db/productsDb.js";
 import { getListByShareId } from "../db/listsDb.js";
 
 interface CreateProductBody {
@@ -8,6 +8,16 @@ interface CreateProductBody {
 
 interface ShareListParams {
   shareId: string;
+}
+
+interface ProductParams {
+  shareId: string;
+  id: string;
+}
+
+interface CreateUpdateBody {
+  quant: number;
+  isPurchased: boolean;
 }
 
 export async function productsRoutes(server: FastifyInstance) {
@@ -31,9 +41,26 @@ export async function productsRoutes(server: FastifyInstance) {
     },
   );
 
-  server.patch("/lists/:shareId/products/:id", async (request, reply) => {
-    return { message: "atualizar produto" };
-  });
+  server.patch<{ Params: ProductParams; Body: CreateUpdateBody }>(
+    "/lists/:shareId/products/:id",
+    async (request, reply) => {
+      const shareId = request.params.shareId;
+      const productId = request.params.id;
+      const updatedProduct = request.body;
+      const list = await getListByShareId(shareId);
+
+      if (list === null) {
+        reply.status(404);
+        return;
+      }
+
+      const newProduct = await updateProduct(productId, updatedProduct);
+
+      console.log("Produto atualizado: ", newProduct);
+
+      return newProduct;
+    },
+  );
 
   server.delete("/lists/:shareId/products/:id", (request, reply) => {
     return { message: "deletar produto" };

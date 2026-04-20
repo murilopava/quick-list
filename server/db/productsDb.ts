@@ -1,5 +1,9 @@
 import prisma from "../lib/prisma.js";
-import { getListByShareId } from "./listsDb.js";
+
+interface CreateUpadateProduct {
+  quant?: number;
+  isPurchased: boolean;
+}
 
 export async function addProduct(listId: string, name: string) {
   const product = await prisma.product.create({
@@ -11,4 +15,18 @@ export async function addProduct(listId: string, name: string) {
   });
 
   return product;
+}
+
+export async function updateProduct(
+  productId: string,
+  update: CreateUpadateProduct,
+) {
+  const updatedProduct = await prisma.product.update({
+    data: update,
+    where: {
+      id: productId,
+    },
+  });
+
+  return updatedProduct;
 }
