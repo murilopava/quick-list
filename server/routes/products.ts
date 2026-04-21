@@ -1,5 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { addProduct, deleteProduct, updateProduct } from "../db/productsDb.js";
+import {
+  addProduct,
+  deleteProduct,
+  findProductById,
+  updateProduct,
+} from "../db/productsDb.js";
 import { getListByShareId } from "../db/listsDb.js";
 
 interface CreateProductBody {
@@ -66,7 +71,6 @@ export async function productsRoutes(server: FastifyInstance) {
     "/lists/:shareId/products/:id",
     async (request, reply) => {
       const shareId = request.params.shareId;
-      const productId = request.params.id;
 
       const list = await getListByShareId(shareId);
 
@@ -75,7 +79,18 @@ export async function productsRoutes(server: FastifyInstance) {
         return;
       }
 
+      const productId = request.params.id;
+
+      const product = await findProductById(productId);
+
+      if (product == null) {
+        reply.status(404);
+        return;
+      }
+
       const deletedProduct = await deleteProduct(productId);
+
+      console.log("produto deletado: ", deletedProduct);
 
       return deletedProduct;
     },

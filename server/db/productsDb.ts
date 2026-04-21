@@ -17,6 +17,16 @@ export async function addProduct(listId: string, name: string) {
   return product;
 }
 
+export async function findProductById(productId: string) {
+  const product = await prisma.product.findUnique({
+    where: {
+      id: productId,
+    },
+  });
+
+  return product;
+}
+
 export async function updateProduct(
   productId: string,
   update: CreateUpadateProduct,
@@ -37,8 +47,6 @@ export async function deleteProduct(productId: string) {
       id: productId,
     },
   });
-
-  console.log("produto deletado: ", deletedProduct);
 
   return deletedProduct;
 }
