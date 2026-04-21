@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { createList, getListByShareId } from "../db/listsDb.js";
+import { createList, deleteList, getListByShareId } from "../db/listsDb.js";
 
 interface CreateListBody {
   name: string;
@@ -33,9 +33,23 @@ export async function listsRoutes(server: FastifyInstance) {
     },
   );
 
-  server.delete("/lists/:shareId", async (request, reply) => {
-    return { message: "deletar lista" };
-  });
+  server.delete<{ Params: ShareListParams }>(
+    "/lists/:shareId",
+    async (request, reply) => {
+      const listId = request.params.shareId;
+
+      if (listId == null) {
+        reply.status(404);
+        return;
+      }
+
+      const deletedList = deleteList(listId);
+
+      console.log("lista deletada: ", deletedList);
+
+      return deletedList;
+    },
+  );
 }
 
 export default listsRoutes;

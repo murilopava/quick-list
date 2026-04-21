@@ -24,3 +24,13 @@ export async function getListByShareId(shareId: string) {
 
   return list;
 }
+
+export async function deleteList(listId: string) {
+  const deletedList = await prisma.list.delete({
+    where: {
+      id: listId,
+    },
+  });
+
+  return deletedList;
+}
