@@ -37,13 +37,14 @@ export async function listsRoutes(server: FastifyInstance) {
     "/lists/:shareId",
     async (request, reply) => {
       const listId = request.params.shareId;
+      const list = await getListByShareId(listId);
 
-      if (listId == null) {
+      if (list === null) {
         reply.status(404);
         return;
       }
 
-      const deletedList = deleteList(listId);
+      const deletedList = await deleteList(list.id);
 
       console.log("lista deletada: ", deletedList);
 

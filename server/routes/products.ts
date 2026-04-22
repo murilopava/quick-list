@@ -74,7 +74,7 @@ export async function productsRoutes(server: FastifyInstance) {
 
       const list = await getListByShareId(shareId);
 
-      if (list == null) {
+      if (list === null) {
         reply.status(404);
         return;
       }
@@ -83,7 +83,7 @@ export async function productsRoutes(server: FastifyInstance) {
 
       const product = await findProductById(productId);
 
-      if (product == null) {
+      if (product === null) {
         reply.status(404);
         return;
       }
