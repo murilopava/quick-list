@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import Home from "./pages/Home";
-import Products from "./pages/Products.jsx";
+import Products from "./pages/Products.js";
 
 function App() {
   return (

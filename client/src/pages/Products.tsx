@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import ItemLista from "../components/ItemLista.jsx";
+import ItemLista from "../components/ItemLista.js";
 import validateProducts from "../utils/validateProducts.js";
 
 function Products() {
