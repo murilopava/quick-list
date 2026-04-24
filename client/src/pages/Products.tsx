@@ -1,21 +1,31 @@
 import { useEffect, useRef, useState } from "react";
 import ItemLista from "../components/ItemLista.js";
 import validateProducts from "../utils/validateProducts.js";
+import { Product } from "../types/index.js";
+import { useParams } from "react-router-dom";
 
 function Products() {
-  const [listaMercado, setListaMercado] = useState(() => {
-    return JSON.parse(localStorage.getItem("produtos")) || [];
-  });
-  const [erro, setErro] = useState();
-  const inputAdicionar = useRef();
+  const [products, setProducts] = useState<Product[]>([]);
+
+  const { shareId } = useParams<{ shareId: string | undefined }>();
 
   useEffect(() => {
-    localStorage.setItem("produtos", JSON.stringify(listaMercado));
-  }, [listaMercado]);
+    const fetchProducts = async () => {
+      const response = await fetch(`http://[::1]:3333/lists/${shareId}`);
+      const data = await response.json();
+
+      setProducts(data.products);
+    };
+
+    fetchProducts();
+  }, [shareId]);
+
+  const [erro, setErro] = useState<string>("");
+  const inputAdicionar = useRef<string>();
 
   const adicionarElementoNaLista = () => {
     const inputValue = inputAdicionar.current.value.trim();
-    const errorValidation = validateProducts(inputValue, listaMercado);
+    const errorValidation = validateProducts(inputValue, []);
     setErro(errorValidation);
 
     if (errorValidation) return;
@@ -53,7 +63,7 @@ function Products() {
 
       {listaMercado.length > 0 ? (
         <ul className="flex w-full flex-col gap-2">
-          {listaMercado.map((itemLista, index) => {
+          {listaMercado.map((itemLista: string, index: number) => {
             return (
               <ItemLista
                 key={index}
