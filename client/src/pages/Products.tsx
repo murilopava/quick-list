@@ -1,40 +1,33 @@
 import { useEffect, useRef, useState } from "react";
-import ItemLista from "../components/ItemLista.js";
+import ListItem from "../components/ListItem.js";
 import validateProducts from "../utils/validateProducts.js";
 import { Product } from "../types/index.js";
 import { useParams } from "react-router-dom";
 
 function Products() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [erro, setError] = useState<string>("");
 
-  const { shareId } = useParams<{ shareId: string | undefined }>();
+  const { shareId } = useParams<{ shareId: string }>();
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const response = await fetch(`http://[::1]:3333/lists/${shareId}`);
-      const data = await response.json();
+      try {
+        const response = await fetch(`http://localhost:3333/lists/${shareId}`);
+        const data = await response.json();
 
-      setProducts(data.products);
+        setProducts(data.products);
+      } catch (err) {
+        console.log(err);
+      }
     };
 
     fetchProducts();
   }, [shareId]);
 
-  const [erro, setErro] = useState<string>("");
-  const inputAdicionar = useRef<string>();
+  const inputAdicionar = useRef<HTMLInputElement>(null);
 
-  const adicionarElementoNaLista = () => {
-    const inputValue = inputAdicionar.current.value.trim();
-    const errorValidation = validateProducts(inputValue, []);
-    setErro(errorValidation);
-
-    if (errorValidation) return;
-
-    setListaMercado([...listaMercado, inputValue]);
-
-    inputAdicionar.current.value = "";
-    return listaMercado;
-  };
+  const adicionarElementoNaLista = () => {};
 
   return (
     <form
@@ -49,7 +42,7 @@ function Products() {
           ref={inputAdicionar}
           type="text"
           placeholder="Digite um item"
-          onChange={() => setErro("")}
+          onChange={() => setError("")}
         />
 
         <button
@@ -61,16 +54,16 @@ function Products() {
         </button>
       </div>
 
-      {listaMercado.length > 0 ? (
+      {products.length > 0 ? (
         <ul className="flex w-full flex-col gap-2">
-          {listaMercado.map((itemLista: string, index: number) => {
+          {products.map((product) => {
             return (
-              <ItemLista
-                key={index}
-                itemLista={itemLista}
-                listaMercado={listaMercado}
-                setListaMercado={setListaMercado}
-                setErro={setErro}
+              <ListItem
+                key={product.id}
+                product={product}
+                setProducts={setProducts}
+                shareId={shareId}
+                setError={setError}
               />
             );
           })}
