@@ -27,7 +27,26 @@ function Products() {
 
   const inputAdicionar = useRef<HTMLInputElement>(null);
 
-  const adicionarElementoNaLista = () => {};
+  const adicionarElementoNaLista = async (productName: string) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3333/lists/${shareId}/products`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: productName }),
+        },
+      );
+
+      const newProduct = await response.json();
+
+      setProducts((prev) => [...prev, newProduct]);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <form
