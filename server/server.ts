@@ -1,7 +1,7 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
 import listsRoutes from "./routes/lists.js";
-import productsRoutes from "./routes/products.js";
+import itemsRoutes from "./routes/products.js";
 
 const server = fastify();
 
@@ -9,7 +9,7 @@ server.register(cors, {
   origin: "*",
 });
 server.register(listsRoutes);
-server.register(productsRoutes);
+server.register(itemsRoutes);
 
 server.get("/", (request, reply) => {
   reply.redirect("/lists");

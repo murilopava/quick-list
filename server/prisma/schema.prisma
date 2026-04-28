@@ -16,12 +16,12 @@ model List {
   id        String   @id @default(uuid())
   shareId   String   @unique @default(nanoid())
   name      String
-  products  Product[]  
+  items  Item[]  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Product {
+model Item {
   id          String @id @default(uuid())
   listId      String
   list List   @relation(fields: [listId], references: [id], onDelete: Cascade)

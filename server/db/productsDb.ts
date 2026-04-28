@@ -1,12 +1,12 @@
 import prisma from "../lib/prisma.js";
 
-interface CreateUpadateProduct {
+interface CreateUpadateItem {
   quant?: number;
   isPurchased: boolean;
 }
 
-export async function addProduct(listId: string, name: string) {
-  const product = await prisma.product.create({
+export async function addItem(listId: string, name: string) {
+  const product = await prisma.item.create({
     data: {
       listId: listId,
       name: name,
@@ -17,8 +17,8 @@ export async function addProduct(listId: string, name: string) {
   return product;
 }
 
-export async function findProductById(productId: string) {
-  const product = await prisma.product.findUnique({
+export async function findItemById(productId: string) {
+  const product = await prisma.item.findUnique({
     where: {
       id: productId,
     },
@@ -27,26 +27,23 @@ export async function findProductById(productId: string) {
   return product;
 }
 
-export async function updateProduct(
-  productId: string,
-  update: CreateUpadateProduct,
-) {
-  const updatedProduct = await prisma.product.update({
+export async function updateItem(productId: string, update: CreateUpadateItem) {
+  const updatedItem = await prisma.item.update({
     data: update,
     where: {
       id: productId,
     },
   });
 
-  return updatedProduct;
+  return updatedItem;
 }
 
-export async function deleteProduct(productId: string) {
-  const deletedProduct = await prisma.product.delete({
+export async function deleteItem(productId: string) {
+  const deletedItem = await prisma.item.delete({
     where: {
       id: productId,
     },
   });
 
-  return deletedProduct;
+  return deletedItem;
 }

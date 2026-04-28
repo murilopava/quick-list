@@ -1,13 +1,13 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import {
-  addProduct,
-  deleteProduct,
-  findProductById,
-  updateProduct,
+  addItem as addItem,
+  deleteItem,
+  findItemById,
+  updateItem,
 } from "../db/productsDb.js";
 import { getListByShareId } from "../db/listsDb.js";
 
-interface CreateProductBody {
+interface CreateItemBody {
   name: string;
 }
 
@@ -15,7 +15,7 @@ interface ShareListParams {
   shareId: string;
 }
 
-interface ProductParams {
+interface ItemParams {
   shareId: string;
   id: string;
 }
@@ -25,9 +25,9 @@ interface CreateUpdateBody {
   isPurchased: boolean;
 }
 
-export async function productsRoutes(server: FastifyInstance) {
-  server.post<{ Body: CreateProductBody; Params: ShareListParams }>(
-    "/lists/:shareId/products",
+export async function itemsRoutes(server: FastifyInstance) {
+  server.post<{ Body: CreateItemBody; Params: ShareListParams }>(
+    "/lists/:shareId/items",
     async (request, reply) => {
       const { name } = request.body;
       const shareId = request.params.shareId;
@@ -39,18 +39,18 @@ export async function productsRoutes(server: FastifyInstance) {
         return;
       }
 
-      const product = await addProduct(list.id, name);
+      const item = await addItem(list.id, name);
 
       reply.status(201);
-      return product;
+      return item;
     },
   );
 
-  server.patch<{ Params: ProductParams; Body: CreateUpdateBody }>(
-    "/lists/:shareId/products/:id",
+  server.patch<{ Params: ItemParams; Body: CreateUpdateBody }>(
+    "/lists/:shareId/items/:id",
     async (request, reply) => {
       const shareId = request.params.shareId;
-      const productId = request.params.id;
+      const itemId = request.params.id;
       const updatedProduct = request.body;
       const list = await getListByShareId(shareId);
 
@@ -59,7 +59,7 @@ export async function productsRoutes(server: FastifyInstance) {
         return;
       }
 
-      const newProduct = await updateProduct(productId, updatedProduct);
+      const newProduct = await updateItem(itemId, updatedProduct);
 
       console.log("Produto atualizado: ", newProduct);
 
@@ -67,8 +67,8 @@ export async function productsRoutes(server: FastifyInstance) {
     },
   );
 
-  server.delete<{ Params: ProductParams }>(
-    "/lists/:shareId/products/:id",
+  server.delete<{ Params: ItemParams }>(
+    "/lists/:shareId/items/:id",
     async (request, reply) => {
       const shareId = request.params.shareId;
 
@@ -81,14 +81,14 @@ export async function productsRoutes(server: FastifyInstance) {
 
       const productId = request.params.id;
 
-      const product = await findProductById(productId);
+      const product = await findItemById(productId);
 
       if (product === null) {
         reply.status(404);
         return;
       }
 
-      const deletedProduct = await deleteProduct(productId);
+      const deletedProduct = await deleteItem(productId);
 
       console.log("produto deletado: ", deletedProduct);
 
@@ -97,4 +97,4 @@ export async function productsRoutes(server: FastifyInstance) {
   );
 }
 
-export default productsRoutes;
+export default itemsRoutes;
