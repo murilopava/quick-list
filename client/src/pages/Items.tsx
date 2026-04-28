@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import ListItem from "../components/ListItem.js";
-import validateProducts from "../utils/validateProducts.js";
-import { Product } from "../types/index.js";
+import validateItems from "../utils/validateItems.js";
+import { Item } from "../types/index.js";
 import { useParams } from "react-router-dom";
 
-function Products() {
-  const [products, setProducts] = useState<Product[]>([]);
+function Items() {
+  const [items, setItems] = useState<Item[]>([]);
   const [erro, setError] = useState<string>("");
 
   const { shareId } = useParams<{ shareId: string }>();
@@ -16,7 +16,7 @@ function Products() {
         const response = await fetch(`http://localhost:3333/lists/${shareId}`);
         const data = await response.json();
 
-        setProducts(data.products);
+        setItems(data.products);
       } catch (err) {
         console.log(err);
       }
@@ -27,7 +27,14 @@ function Products() {
 
   const inputAdicionar = useRef<HTMLInputElement>(null);
 
-  const adicionarElementoNaLista = async (productName: string) => {
+  const adicionarElementoNaLista = async () => {
+    const error = validateItems(inputAdicionar.current?.value ?? "", items);
+
+    if (error) {
+      setError(error);
+      return;
+    }
+
     try {
       const response = await fetch(
         `http://localhost:3333/lists/${shareId}/products`,
@@ -36,13 +43,17 @@ function Products() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ name: productName }),
+          body: JSON.stringify({ name: inputAdicionar.current?.value }),
         },
       );
 
       const newProduct = await response.json();
 
-      setProducts((prev) => [...prev, newProduct]);
+      setItems((prev) => [...prev, newProduct]);
+
+      if (inputAdicionar.current) {
+        inputAdicionar.current.value = "";
+      }
     } catch (err) {
       console.log(err);
     }
@@ -67,20 +78,20 @@ function Products() {
         <button
           className="cursor-pointer rounded-md bg-gray-800 px-2 text-white transition hover:bg-gray-500"
           type="submit"
-          onClick={() => adicionarElementoNaLista(inputAdicionar)}
+          onClick={() => adicionarElementoNaLista()}
         >
           Adicionar
         </button>
       </div>
 
-      {products.length > 0 ? (
+      {items.length > 0 ? (
         <ul className="flex w-full flex-col gap-2">
-          {products.map((product) => {
+          {items.map((product) => {
             return (
               <ListItem
                 key={product.id}
-                product={product}
-                setProducts={setProducts}
+                item={product}
+                setProducts={setItems}
                 shareId={shareId}
                 setError={setError}
               />
@@ -96,4 +107,4 @@ function Products() {
   );
 }
 
-export default Products;
+export default Items;

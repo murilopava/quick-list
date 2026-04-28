@@ -1,28 +1,29 @@
 import React from "react";
-import { Product } from "../types";
+import { Item } from "../types";
 
 interface ListItemProps {
-  product: Product;
-  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  item: Item;
+  setProducts: React.Dispatch<React.SetStateAction<Item[]>>;
   shareId: string | undefined;
   setError: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const ListItem = ({
-  product,
-  setProducts,
+  item: item,
+  setProducts: setItems,
   shareId,
   setError,
 }: ListItemProps) => {
   const removeItemList = async () => {
     try {
       await fetch(
-        `http://localhost:3333/lists/${shareId}/products/${product.id}`,
+        `http://localhost:3333/lists/${shareId}/products/${item.id}`,
         {
           method: "DELETE",
         },
       );
-      setProducts((prev) => prev.filter((p) => p.id !== product.id));
+
+      setItems((prev) => prev.filter((p) => p.id !== item.id));
     } catch (err) {
       console.log(err);
     }
@@ -31,7 +32,7 @@ const ListItem = ({
   const updateQuant = async (newQuant: number) => {
     try {
       await fetch(
-        `http://localhost:3333/lists/${shareId}/products/${product.id}`,
+        `http://localhost:3333/lists/${shareId}/products/${item.id}`,
         {
           method: "PATCH",
           headers: {
@@ -41,8 +42,8 @@ const ListItem = ({
         },
       );
 
-      setProducts((prev) =>
-        prev.map((p) => (p.id === product.id ? { ...p, quant: newQuant } : p)),
+      setItems((prev) =>
+        prev.map((p) => (p.id === item.id ? { ...p, quant: newQuant } : p)),
       );
     } catch (err) {
       console.log(err);
@@ -52,7 +53,7 @@ const ListItem = ({
   const updateItemState = async (newState: boolean) => {
     try {
       await fetch(
-        `http://localhost:3333/lists/${shareId}/products/${product.id}`,
+        `http://localhost:3333/lists/${shareId}/products/${item.id}`,
         {
           method: "PATCH",
           headers: {
@@ -62,9 +63,9 @@ const ListItem = ({
         },
       );
 
-      setProducts((prev) =>
+      setItems((prev) =>
         prev.map((p) =>
-          p.id === product.id ? { ...p, isPurchased: newState } : p,
+          p.id === item.id ? { ...p, isPurchased: newState } : p,
         ),
       );
     } catch (err) {
@@ -77,27 +78,27 @@ const ListItem = ({
       <li className="align-items-center flex w-full gap-2">
         <label htmlFor="quant" className="flex w-full min-w-0 items-center">
           <p
-            className={`max-w-65 px-2 text-xl wrap-break-word ${product.isPurchased ? "text-gray-500 line-through decoration-4" : ""}`}
+            className={`max-w-65 px-2 text-xl wrap-break-word ${item.isPurchased ? "text-gray-500 line-through decoration-4" : ""}`}
           >
-            {product.name}
+            {item.name}
           </p>
         </label>
 
         <div className="flex items-center gap-2">
           <button
-            className={`h-6 w-6 rounded-full transition-colors ${product.isPurchased ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"} cursor-pointer`}
+            className={`h-6 w-6 rounded-full transition-colors ${item.isPurchased ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"} cursor-pointer`}
             onClick={
-              product.isPurchased
+              item.isPurchased
                 ? async () => await updateItemState(false)
                 : async () => await updateItemState(true)
             }
           >
-            {product.isPurchased ? "✔️" : "❌"}
+            {item.isPurchased ? "✔️" : "❌"}
           </button>
 
           <button
-            className={`rounded-md ${product.isPurchased ? "cursor-pointer bg-red-600 transition hover:bg-red-500" : "cursor-not-allowed bg-gray-500"} px-2 text-white`}
-            disabled={!product.isPurchased}
+            className={`rounded-md ${item.isPurchased ? "cursor-pointer bg-red-600 transition hover:bg-red-500" : "cursor-not-allowed bg-gray-500"} px-2 text-white`}
+            disabled={!item.isPurchased}
             onClick={() => {
               setError("");
               removeItemList();
@@ -109,7 +110,7 @@ const ListItem = ({
           <input
             className="align-center w-10 rounded-sm border border-gray-300 p-0 text-center"
             type="number"
-            value={product.quant}
+            value={item.quant}
             onChange={(e) => updateQuant(Number(e.target.value))}
             max={20}
             min={0}
@@ -120,13 +121,13 @@ const ListItem = ({
 
           <button
             className="cursor-pointer rounded-md bg-blue-600 px-2 font-bold text-white transition hover:bg-blue-500"
-            onClick={() => updateQuant(product.quant + 1)}
+            onClick={() => updateQuant(item.quant + 1)}
           >
             +
           </button>
           <button
             className="cursor-pointer rounded-md bg-blue-600 px-2 font-bold text-white transition hover:bg-blue-500"
-            onClick={() => updateQuant(product.quant - 1)}
+            onClick={() => updateQuant(item.quant - 1)}
           >
             -
           </button>
