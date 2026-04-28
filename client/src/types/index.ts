@@ -5,3 +5,11 @@ export interface Product {
   quant: number;
   isPurchased: boolean;
 }
+
+export interface List {
+  id: string;
+  shareId: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}

@@ -67,7 +67,7 @@ function Products() {
         <button
           className="cursor-pointer rounded-md bg-gray-800 px-2 text-white transition hover:bg-gray-500"
           type="submit"
-          onClick={() => adicionarElementoNaLista()}
+          onClick={() => adicionarElementoNaLista(inputAdicionar)}
         >
           Adicionar
         </button>

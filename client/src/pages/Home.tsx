@@ -1,21 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
-import List from "../components/List";
+import Lists from "../components/Lists";
+import { List } from "../types";
 
 function Home() {
   const [listArray, setListArray] = useState(() => {
-    return JSON.parse(localStorage.getItem("lists")) || [];
+    return JSON.parse(localStorage.getItem("lists") || "");
   });
-  const valor = useRef();
+
+  const inputValue = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     localStorage.setItem("lists", JSON.stringify(listArray));
   }, [listArray]);
 
   const adicionarLista = () => {
-    const valorAtual = valor.current.value.trim();
-    setListArray([...listArray, valorAtual]);
+    setListArray([...listArray, inputValue]);
 
-    valor.current.value = "";
+    inputValue.current = null;
 
     return listArray;
   };
@@ -33,7 +34,7 @@ function Home() {
           className="rounded-md border px-1 text-center"
           placeholder="Digite o código da lista"
           type="text"
-          ref={valor}
+          ref={inputValue}
         />
 
         <button
@@ -47,9 +48,9 @@ function Home() {
 
       {listArray.length > 0 ? (
         <ul className="flex w-full flex-col gap-2">
-          {listArray.map((list, index) => {
+          {listArray.map((list: List, index: number) => {
             return (
-              <List
+              <Lists
                 key={index}
                 listArray={listArray}
                 list={list}

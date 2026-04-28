@@ -1,6 +1,13 @@
-import React from "react";
+import React, { SetStateAction } from "react";
+import { List } from "../types";
 
-const List = ({ list, listArray, setListArray }) => {
+interface CreatePropList {
+  list: List;
+  listArray: List[];
+  setListArray: React.Dispatch<SetStateAction<List[]>>;
+}
+
+const Lists = ({ list, listArray, setListArray }: CreatePropList) => {
   const removerLista = () => {
     const newList = [...listArray];
     const listUpdated = newList.filter((actualList) => {
@@ -13,7 +20,7 @@ const List = ({ list, listArray, setListArray }) => {
   return (
     <>
       <li className="align-items-center flex w-full gap-2">
-        <p>{list}</p>
+        <p>{list.name}</p>
 
         <div className="flex items-center gap-2">
           <button
@@ -30,4 +37,4 @@ const List = ({ list, listArray, setListArray }) => {
   );
 };
 
-export default List;
+export default Lists;
