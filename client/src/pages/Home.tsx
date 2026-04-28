@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import Lists from "../components/Lists";
 import { List } from "../types";
+import validateLists from "../utils/validateLists";
 
 function Home() {
   const [listArray, setListArray] = useState(() => {
     return JSON.parse(localStorage.getItem("lists") || "");
   });
+
+  const [error, setError] = useState<string>("");
 
   const inputValue = useRef<HTMLInputElement>(null);
 
@@ -13,10 +16,31 @@ function Home() {
     localStorage.setItem("lists", JSON.stringify(listArray));
   }, [listArray]);
 
-  const adicionarLista = () => {
-    setListArray([...listArray, inputValue]);
+  const adicionarLista = async () => {
+    const error = validateLists(inputValue.current?.value ?? "", listArray);
 
-    inputValue.current = null;
+    if (error) {
+      setError(error);
+      return;
+    }
+
+    try {
+      await fetch(`http://localhost/home`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ list: inputValue.current?.value }),
+      });
+    } catch (err) {
+      console.log(err);
+    }
+
+    setListArray([...listArray, inputValue.current?.value]);
+
+    if (inputValue.current) {
+      inputValue.current.value = "";
+    }
 
     return listArray;
   };
