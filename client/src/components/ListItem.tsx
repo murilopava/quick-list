@@ -16,12 +16,9 @@ const ListItem = ({
 }: ListItemProps) => {
   const removeItemList = async () => {
     try {
-      await fetch(
-        `http://localhost:3333/lists/${shareId}/products/${item.id}`,
-        {
-          method: "DELETE",
-        },
-      );
+      await fetch(`http://localhost:3333/lists/${shareId}/items/${item.id}`, {
+        method: "DELETE",
+      });
 
       setItems((prev) => prev.filter((p) => p.id !== item.id));
     } catch (err) {
@@ -31,16 +28,13 @@ const ListItem = ({
 
   const updateQuant = async (newQuant: number) => {
     try {
-      await fetch(
-        `http://localhost:3333/lists/${shareId}/products/${item.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ quant: newQuant }),
+      await fetch(`http://localhost:3333/lists/${shareId}/items/${item.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ quant: newQuant }),
+      });
 
       setItems((prev) =>
         prev.map((p) => (p.id === item.id ? { ...p, quant: newQuant } : p)),
@@ -52,16 +46,13 @@ const ListItem = ({
 
   const updateItemState = async (newState: boolean) => {
     try {
-      await fetch(
-        `http://localhost:3333/lists/${shareId}/products/${item.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ isPurchased: newState }),
+      await fetch(`http://localhost:3333/lists/${shareId}/items/${item.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ isPurchased: newState }),
+      });
 
       setItems((prev) =>
         prev.map((p) =>

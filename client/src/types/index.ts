@@ -13,3 +13,10 @@ export interface List {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface ListLS {
+  shareId: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}

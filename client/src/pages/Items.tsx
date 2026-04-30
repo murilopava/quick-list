@@ -37,7 +37,7 @@ function Items() {
 
     try {
       const response = await fetch(
-        `http://localhost:3333/lists/${shareId}/products`,
+        `http://localhost:3333/lists/${shareId}/items`,
         {
           method: "POST",
           headers: {

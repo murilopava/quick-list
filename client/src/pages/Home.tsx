@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import Lists from "../components/Lists";
-import { List } from "../types";
 import validateLists from "../utils/validateLists";
+import { ListLS } from "../types";
 
 function Home() {
-  const [listArray, setListArray] = useState(() => {
-    return JSON.parse(localStorage.getItem("lists") || "");
+  const [listArray, setListArray] = useState<ListLS[]>(() => {
+    return JSON.parse(localStorage.getItem("lists") ?? "[]");
   });
 
   const [error, setError] = useState<string>("");
@@ -25,24 +25,25 @@ function Home() {
     }
 
     try {
-      await fetch(`http://localhost/home`, {
+      const response = await fetch(`http://localhost:3333/lists`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ list: inputValue.current?.value }),
+        body: JSON.stringify({ name: inputValue.current?.value }),
       });
+
+      const { shareId, name, createdAt, updatedAt } = await response.json();
+      console.log({ shareId, name, createdAt, updatedAt });
+
+      setListArray([...listArray, { shareId, name, createdAt, updatedAt }]);
+
+      if (inputValue.current) {
+        inputValue.current.value = "";
+      }
     } catch (err) {
       console.log(err);
     }
-
-    setListArray([...listArray, inputValue.current?.value]);
-
-    if (inputValue.current) {
-      inputValue.current.value = "";
-    }
-
-    return listArray;
   };
 
   return (
@@ -72,10 +73,10 @@ function Home() {
 
       {listArray.length > 0 ? (
         <ul className="flex w-full flex-col gap-2">
-          {listArray.map((list: List, index: number) => {
+          {listArray.map((list: ListLS) => {
             return (
               <Lists
-                key={index}
+                key={list.shareId}
                 listArray={listArray}
                 list={list}
                 setListArray={setListArray}
