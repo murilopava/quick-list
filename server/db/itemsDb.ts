@@ -6,7 +6,7 @@ interface CreateUpadateItem {
 }
 
 export async function addItem(listId: string, name: string) {
-  const product = await prisma.item.create({
+  const item = await prisma.item.create({
     data: {
       listId: listId,
       name: name,
@@ -14,34 +14,34 @@ export async function addItem(listId: string, name: string) {
     },
   });
 
-  return product;
+  return item;
 }
 
-export async function findItemById(productId: string) {
-  const product = await prisma.item.findUnique({
+export async function findItemById(itemId: string) {
+  const item = await prisma.item.findUnique({
     where: {
-      id: productId,
+      id: itemId,
     },
   });
 
-  return product;
+  return item;
 }
 
-export async function updateItem(productId: string, update: CreateUpadateItem) {
+export async function updateItem(itemId: string, update: CreateUpadateItem) {
   const updatedItem = await prisma.item.update({
     data: update,
     where: {
-      id: productId,
+      id: itemId,
     },
   });
 
   return updatedItem;
 }
 
-export async function deleteItem(productId: string) {
+export async function deleteItem(itemId: string) {
   const deletedItem = await prisma.item.delete({
     where: {
-      id: productId,
+      id: itemId,
     },
   });
 

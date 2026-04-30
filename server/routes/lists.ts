@@ -12,8 +12,8 @@ interface ShareListParams {
 export async function listsRoutes(server: FastifyInstance) {
   server.post<{ Body: CreateListBody }>("/lists", async (request, reply) => {
     const { name } = request.body;
-    const { shareId } = await createList(name);
-    return { shareId };
+    const { shareId, createdAt, updatedAt } = await createList(name);
+    return { shareId, name, createdAt, updatedAt };
   });
 
   server.get<{ Params: ShareListParams }>(

@@ -1,7 +1,7 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
 import listsRoutes from "./routes/lists.js";
-import itemsRoutes from "./routes/products.js";
+import itemsRoutes from "./routes/items.js";
 
 const server = fastify();
 

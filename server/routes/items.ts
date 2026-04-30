@@ -4,7 +4,7 @@ import {
   deleteItem,
   findItemById,
   updateItem,
-} from "../db/productsDb.js";
+} from "../db/itemsDb.js";
 import { getListByShareId } from "../db/listsDb.js";
 
 interface CreateItemBody {
