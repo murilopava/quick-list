@@ -17,11 +17,13 @@ const Lists = ({ list, listArray, setListArray }: CreatePropList) => {
     setListArray(listUpdated);
   };
 
-  console.log(list.name);
+  console.log(list.shareId);
   return (
     <>
-      <li className="align-items-center flex w-full gap-2">
-        <p className="p-3">{list.name}</p>
+      <li className="block bg-white p-6 rounded-lg border border-neutral-200 hover:border-neutral-300 transition-colors">
+        <div className="flex items-center justify-between">
+          <h2 className="text-neutral-900">{list.name}</h2>
+        </div>
 
         <div className="flex items-center gap-2">
           <button
