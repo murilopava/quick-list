@@ -2,14 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import Lists from "../components/Lists";
 import validateLists from "../utils/validateLists";
 import { ListLS } from "../types";
-import { ArrowLeft, Plus } from 'lucide-react';
+import { ArrowLeft, Plus } from "lucide-react";
 
 function Home() {
   const [listArray, setListArray] = useState<ListLS[]>(() => {
     return JSON.parse(localStorage.getItem("lists") ?? "[]");
   });
 
-  const [mostrarModal, setMostrarModal] = useState(false);
+  const [showModalCreate, setShowModalCreate] = useState(false);
+  const [showModelAdd, setShowModalAdd] = useState(false);
   const [error, setError] = useState<string>("");
 
   const inputValue = useRef<HTMLInputElement>(null);
@@ -18,8 +19,8 @@ function Home() {
     localStorage.setItem("lists", JSON.stringify(listArray));
   }, [listArray]);
 
-  const adicionarLista = async () => {
-    const error = validateLists(inputValue.current?.value ?? "", listArray);
+  const addList = async () => {
+    const error = validateLists(inputValue.current?.value ?? "");
 
     if (error) {
       setError(error);
@@ -43,6 +44,8 @@ function Home() {
       if (inputValue.current) {
         inputValue.current.value = "";
       }
+
+      setShowModalCreate(false);
     } catch (err) {
       console.log(err);
     }
@@ -51,20 +54,22 @@ function Home() {
   return (
     <>
       <div className="min-h-screen bg-neutral-50">
-        <div className="max-w-2xl mx-auto px-6 py-12">
+        <div className="mx-auto max-w-2xl px-6 py-12">
           <div className="mb-8">
-            <h1 className="text-neutral-900 mb-6">Listas</h1>
+            <h1 className="mb-6 text-2xl font-medium text-neutral-900">
+              Listas
+            </h1>
             <div className="flex items-center gap-3">
               <button
-                onClick={() => setMostrarModal(true)}
-                className="bg-neutral-900 text-white px-6 py-3 rounded-lg hover:bg-neutral-800 transition-colors flex items-center gap-2"
+                onClick={() => setShowModalCreate(true)}
+                className="flex cursor-pointer items-center gap-2 rounded-lg bg-neutral-900 px-6 py-3 text-white transition-colors hover:bg-neutral-800"
               >
                 <Plus size={20} />
                 Criar Lista
               </button>
               <button
-                onClick={() => setMostrarModal(true)}
-                className="bg-neutral-900 text-white px-6 py-3 rounded-lg hover:bg-neutral-800 transition-colors flex items-center gap-2"
+                onClick={() => setShowModalAdd(true)}
+                className="flex cursor-pointer items-center gap-2 rounded-lg bg-neutral-900 px-6 py-3 text-white transition-colors hover:bg-neutral-800"
               >
                 <Plus size={20} />
                 Adicionar Lista
@@ -85,29 +90,67 @@ function Home() {
         </div>
       </div>
 
-      {mostrarModal && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 w-full max-w-md mx-6 shadow-lg">
+      {showModalCreate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+          <div className="mx-6 w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
             <button
-              onClick={() => setMostrarModal(false)}
-              className="mb-6 text-neutral-600 hover:text-neutral-900 transition-colors"
+              onClick={() => setShowModalCreate(false)}
+              className="mb-6 text-neutral-600 transition-colors hover:text-neutral-900"
             >
               <ArrowLeft size={24} />
             </button>
 
-            <h2 className="mb-6 text-neutral-900">Nova Lista</h2>
+            <h2 className="mb-6 text-neutral-900">Criar nova lista</h2>
 
             <input
               type="text"
-              onKeyDown={(e) => e.key === 'Enter' && adicionarLista()}
+              ref={inputValue}
+              onKeyDown={(e) => e.key === "Enter" && addList()}
               placeholder="Nome da lista"
               autoFocus
-              className="w-full px-4 py-3 rounded-lg border border-neutral-200 focus:outline-none focus:border-neutral-400 mb-6"
+              className="mb-6 w-full rounded-lg border border-neutral-200 px-4 py-3 focus:border-neutral-400 focus:outline-none"
+              onChange={() => setError("")}
             />
 
+            {error && <p className="font-medium text-red-600">{error}</p>}
+
             <button
-              onClick={adicionarLista}
-              className="w-full bg-neutral-900 text-white py-3 rounded-lg hover:bg-neutral-800 transition-colors"
+              onClick={addList}
+              className="w-full cursor-pointer rounded-lg bg-neutral-900 py-3 text-white transition-colors hover:bg-neutral-800"
+            >
+              Criar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showModelAdd && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+          <div className="mx-6 w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
+            <button
+              onClick={() => setShowModalAdd(false)}
+              className="mb-6 text-neutral-600 transition-colors hover:text-neutral-900"
+            >
+              <ArrowLeft size={24} />
+            </button>
+
+            <h2 className="mb-6 text-neutral-900">Adicionar lista existente</h2>
+
+            <input
+              type="text"
+              ref={inputValue}
+              onKeyDown={(e) => e.key === "Enter" && addList()}
+              placeholder="Código da Lista"
+              autoFocus
+              className="mb-6 w-full rounded-lg border border-neutral-200 px-4 py-3 focus:border-neutral-400 focus:outline-none"
+              onChange={() => setError("")}
+            />
+
+            {error && <p className="font-medium text-red-600">{error}</p>}
+
+            <button
+              onClick={addList}
+              className="w-full cursor-pointer rounded-lg bg-neutral-900 py-3 text-white transition-colors hover:bg-neutral-800"
             >
               Adicionar
             </button>

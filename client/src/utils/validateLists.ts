@@ -1,6 +1,4 @@
-import { List, ListLS } from "../types";
-
-export default function validateLists(input: string, lists: ListLS[]) {
+export default function validateLists(input: string) {
   if (input === "") {
     return "O campo não pode estar vazio.";
   }
