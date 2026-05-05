@@ -3,6 +3,7 @@ import Lists from "../components/Lists";
 import validateLists from "../utils/validateLists";
 import { ListLS } from "../types";
 import { ArrowLeft, Plus } from "lucide-react";
+import { useParams } from "react-router-dom";
 
 function Home() {
   const [listArray, setListArray] = useState<ListLS[]>(() => {
@@ -19,8 +20,11 @@ function Home() {
     localStorage.setItem("lists", JSON.stringify(listArray));
   }, [listArray]);
 
-  const addList = async () => {
-    const error = validateLists(inputValue.current?.value ?? "");
+  const createList = async () => {
+    const error = await validateLists(
+      inputValue.current?.value ?? "",
+      listArray,
+    );
 
     if (error) {
       setError(error);
@@ -37,7 +41,6 @@ function Home() {
       });
 
       const { shareId, name, createdAt, updatedAt } = await response.json();
-      console.log({ shareId, name, createdAt, updatedAt });
 
       setListArray([...listArray, { shareId, name, createdAt, updatedAt }]);
 
@@ -47,6 +50,41 @@ function Home() {
 
       setShowModalCreate(false);
     } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const addList = async () => {
+    const error = await validateLists(
+      inputValue.current?.value ?? "",
+      listArray,
+    );
+
+    if (error) {
+      setError(error);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3333/lists/${inputValue.current?.value}`,
+      );
+
+      const { shareId, name, createdAt, updatedAt } = await response.json();
+
+      if (shareId === undefined) {
+        throw error;
+      }
+
+      setListArray([...listArray, { shareId, name, createdAt, updatedAt }]);
+
+      if (inputValue.current) {
+        inputValue.current.value = "";
+      }
+
+      setShowModalAdd(false);
+    } catch (err) {
+      setError("Lista não encotrada");
       console.log(err);
     }
   };
@@ -94,7 +132,7 @@ function Home() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
           <div className="mx-6 w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
             <button
-              onClick={() => setShowModalCreate(false)}
+              onClick={() => (setShowModalCreate(false), setError(""))}
               className="mb-6 text-neutral-600 transition-colors hover:text-neutral-900"
             >
               <ArrowLeft size={24} />
@@ -105,7 +143,7 @@ function Home() {
             <input
               type="text"
               ref={inputValue}
-              onKeyDown={(e) => e.key === "Enter" && addList()}
+              onKeyDown={(e) => e.key === "Enter" && createList()}
               placeholder="Nome da lista"
               autoFocus
               className="mb-6 w-full rounded-lg border border-neutral-200 px-4 py-3 focus:border-neutral-400 focus:outline-none"
@@ -115,7 +153,7 @@ function Home() {
             {error && <p className="font-medium text-red-600">{error}</p>}
 
             <button
-              onClick={addList}
+              onClick={createList}
               className="w-full cursor-pointer rounded-lg bg-neutral-900 py-3 text-white transition-colors hover:bg-neutral-800"
             >
               Criar
@@ -128,7 +166,7 @@ function Home() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
           <div className="mx-6 w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
             <button
-              onClick={() => setShowModalAdd(false)}
+              onClick={() => (setShowModalAdd(false), setError(""))}
               className="mb-6 text-neutral-600 transition-colors hover:text-neutral-900"
             >
               <ArrowLeft size={24} />

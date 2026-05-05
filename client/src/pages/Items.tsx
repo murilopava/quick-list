@@ -16,7 +16,7 @@ function Items() {
         const response = await fetch(`http://localhost:3333/lists/${shareId}`);
         const data = await response.json();
 
-        setItems(data.products);
+        setItems(data.items);
       } catch (err) {
         console.log(err);
       }

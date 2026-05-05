@@ -1,5 +1,11 @@
-export default function validateLists(input: string) {
+import { ListLS } from "../types";
+
+export default async function validateLists(input: string, list: ListLS[]) {
   if (input === "") {
     return "O campo não pode estar vazio.";
+  } else if (
+    list.some((list) => list.shareId.toLowerCase() === input.toLowerCase())
+  ) {
+    return "Esta lista já esta no seu banco de listas!";
   }
 }
