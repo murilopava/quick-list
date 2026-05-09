@@ -18,7 +18,7 @@ export async function getListByShareId(shareId: string) {
       shareId,
     },
     include: {
-      Items: true,
+      items: true,
     },
   });
 
