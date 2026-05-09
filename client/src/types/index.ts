@@ -7,16 +7,9 @@ export interface Item {
 }
 
 export interface List {
-  id: string;
   shareId: string;
   name: string;
+  items: Item[];
   createdAt: Date;
   updatedAt: Date;
-}
-
-export interface ListLS {
-  shareId: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
 }

@@ -1,6 +1,6 @@
-import { ListLS } from "../types";
+import { List } from "../types";
 
-export default async function validateLists(input: string, list: ListLS[]) {
+export default async function validateLists(input: string, list: List[]) {
   if (input === "") {
     return "O campo não pode estar vazio.";
   } else if (

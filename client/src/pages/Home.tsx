@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import Lists from "../components/Lists";
 import validateLists from "../utils/validateLists";
-import { ListLS } from "../types";
+import { List } from "../types";
 import { ArrowLeft, Plus } from "lucide-react";
-import { useParams } from "react-router-dom";
 
 function Home() {
-  const [listArray, setListArray] = useState<ListLS[]>(() => {
+  const [listArray, setListArray] = useState<List[]>(() => {
     return JSON.parse(localStorage.getItem("lists") ?? "[]");
   });
 
@@ -40,9 +39,13 @@ function Home() {
         body: JSON.stringify({ name: inputValue.current?.value }),
       });
 
-      const { shareId, name, createdAt, updatedAt } = await response.json();
+      const { shareId, name, items, createdAt, updatedAt } =
+        await response.json();
 
-      setListArray([...listArray, { shareId, name, createdAt, updatedAt }]);
+      setListArray([
+        ...listArray,
+        { shareId, name, items, createdAt, updatedAt },
+      ]);
 
       if (inputValue.current) {
         inputValue.current.value = "";
@@ -66,17 +69,22 @@ function Home() {
     }
 
     try {
+      console.log(inputValue.current?.value);
       const response = await fetch(
         `http://localhost:3333/lists/${inputValue.current?.value}`,
       );
 
-      const { shareId, name, createdAt, updatedAt } = await response.json();
+      const { name, shareId, items, createdAt, updatedAt } =
+        await response.json();
 
       if (shareId === undefined) {
-        throw error;
+        throw "Lista não encontrada";
       }
 
-      setListArray([...listArray, { shareId, name, createdAt, updatedAt }]);
+      setListArray([
+        ...listArray,
+        { shareId, name, items, createdAt, updatedAt },
+      ]);
 
       if (inputValue.current) {
         inputValue.current.value = "";
@@ -84,14 +92,13 @@ function Home() {
 
       setShowModalAdd(false);
     } catch (err) {
-      setError("Lista não encotrada");
       console.log(err);
     }
   };
 
   return (
     <>
-      <div className="min-h-screen bg-neutral-50">
+      <div className="min-h-screen w-full bg-neutral-50">
         <div className="mx-auto max-w-2xl px-6 py-12">
           <div className="mb-8">
             <h1 className="mb-6 text-2xl font-medium text-neutral-900">
@@ -116,11 +123,12 @@ function Home() {
           </div>
 
           <div className="space-y-3">
-            {listArray.map((list: ListLS) => (
+            {listArray.map((list: List) => (
               <Lists
                 key={list.shareId}
                 list={list}
                 listArray={listArray}
+                items={list.items}
                 setListArray={setListArray}
               ></Lists>
             ))}
