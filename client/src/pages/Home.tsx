@@ -130,6 +130,7 @@ function Home() {
                 listArray={listArray}
                 items={list.items}
                 setListArray={setListArray}
+                setError={setError}
               ></Lists>
             ))}
           </div>

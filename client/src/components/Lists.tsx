@@ -1,14 +1,24 @@
 import React, { SetStateAction } from "react";
 import { Item, List } from "../types";
+import { useNavigate } from "react-router-dom";
 
 interface CreatePropList {
   list: List;
   listArray: List[];
   items: Item[];
   setListArray: React.Dispatch<SetStateAction<List[]>>;
+  setError: React.Dispatch<SetStateAction<string>>;
 }
 
-const Lists = ({ list, listArray, items, setListArray }: CreatePropList) => {
+const Lists = ({
+  list,
+  listArray,
+  items,
+  setListArray,
+  setError,
+}: CreatePropList) => {
+  const navigate = useNavigate();
+
   const removerLista = () => {
     const newList = [...listArray];
     const listUpdated = newList.filter((actualList) => {
@@ -20,9 +30,18 @@ const Lists = ({ list, listArray, items, setListArray }: CreatePropList) => {
 
   const enterList = async () => {
     try {
-      const response = await fetch(`http://localhost/lists/${list.shareId}`);
-      const currentList = response.json();
-    } catch (err) {}
+      const response =
+        (await fetch(`http://localhost:3333/lists/${list.shareId}`)) ??
+        undefined;
+      if (response.status == 404) {
+        setError("Lista não encontrada");
+        return;
+      }
+
+      navigate(`${list.shareId}`);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   console.log(list.shareId);
@@ -37,8 +56,9 @@ const Lists = ({ list, listArray, items, setListArray }: CreatePropList) => {
           <span>{items?.length ?? 0} itens </span>
         </div>
         <button
-          className={`h-9 cursor-pointer rounded-md bg-red-600 px-2 text-white`}
-          onClick={() => {
+          className={`h-9 cursor-pointer rounded-md bg-red-600 px-2 text-white transition group-hover:bg-red-600 hover:bg-red-700!`}
+          onClick={(e) => {
+            e.stopPropagation();
             removerLista();
           }}
         >
