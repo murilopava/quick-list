@@ -71,7 +71,7 @@ const ListItem = ({
       />
 
       <span
-        className={`flex-1 ${item.isPurchased ? "text-neutral-400 line-through" : "text-neutral-900"}`}
+        className={`min-w-0 flex-1 break-all ${item.isPurchased ? "text-neutral-400 line-through" : "text-neutral-900"}`}
       >
         {item.name}
       </span>

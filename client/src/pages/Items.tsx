@@ -4,6 +4,7 @@ import validateItems from "../utils/validateItems.js";
 import { Item } from "../types/index.js";
 import { useParams, Link } from "react-router-dom";
 import { Plus, ArrowLeft } from "lucide-react";
+import toast from "react-hot-toast";
 
 function Items() {
   const [items, setItems] = useState<Item[]>([]);
@@ -66,17 +67,34 @@ function Items() {
     }
   };
 
+  const copyShareId = async () => {
+    try {
+      await navigator.clipboard.writeText(shareId ?? "");
+      toast.success("Código de lista copiado!");
+    } catch (err) {
+      toast.error("Não foi possível copiar o código!");
+    }
+  };
+
   return (
     <>
       <div className="min-h-screen w-full bg-neutral-50">
-        <div className="mx-auto max-w-2xl px-6 py-12">
-          <Link
-            to="/lists"
-            className="mb-6 inline-block text-neutral-600 transition-colors hover:text-neutral-900"
-          >
-            ← Voltar
-          </Link>
+        <div className="mx-auto max-w-2xl justify-between px-6 py-12">
+          <div className="flex justify-between">
+            <Link
+              to="/lists"
+              className="mb-6 inline-block text-neutral-600 transition-colors hover:text-neutral-900"
+            >
+              ← Voltar
+            </Link>
 
+            <button
+              className="mb-2 cursor-pointer rounded-lg bg-green-600 px-4 font-medium text-white transition-colors hover:bg-green-700"
+              onClick={() => copyShareId()}
+            >
+              Copiar Código da lista
+            </button>
+          </div>
           <div className="mb-8 flex items-center justify-between">
             <h1 className="text-2xl font-medium text-neutral-900">
               {listName}
