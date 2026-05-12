@@ -9,6 +9,7 @@ server.register(cors, {
   origin: "*",
   methods: ["POST", "GET", "PATCH", "DELETE"],
 });
+
 server.register(listsRoutes);
 server.register(itemsRoutes);
 
