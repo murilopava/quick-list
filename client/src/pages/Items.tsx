@@ -2,11 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import ListItem from "../components/ListItem.js";
 import validateItems from "../utils/validateItems.js";
 import { Item } from "../types/index.js";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+import { Plus, ArrowLeft } from "lucide-react";
 
 function Items() {
   const [items, setItems] = useState<Item[]>([]);
   const [erro, setError] = useState<string>("");
+  const [listName, setListName] = useState<string>("");
+  const [showModal, setShowModal] = useState(false);
 
   const { shareId } = useParams<{ shareId: string }>();
 
@@ -16,6 +19,7 @@ function Items() {
         const response = await fetch(`http://localhost:3333/lists/${shareId}`);
         const data = await response.json();
 
+        setListName(data.name);
         setItems(data.items);
       } catch (err) {
         console.log(err);
@@ -47,63 +51,100 @@ function Items() {
         },
       );
 
-      const newProduct = await response.json();
+      const newItem = await response.json();
 
-      setItems((prev) => [...prev, newProduct]);
+      setItems((prev) => [...prev, newItem]);
 
       if (inputAdicionar.current) {
         inputAdicionar.current.value = "";
       }
+
+      setShowModal(false);
+      setError("");
     } catch (err) {
       console.log(err);
     }
   };
 
   return (
-    <form
-      className="flex w-full max-w-120 flex-col items-center gap-4"
-      onSubmit={(enter) => enter.preventDefault()}
-    >
-      <h1 className="text-4xl font-bold">Lista de Mercado</h1>
+    <>
+      <div className="min-h-screen w-full bg-neutral-50">
+        <div className="mx-auto max-w-2xl px-6 py-12">
+          <Link
+            to="/lists"
+            className="mb-6 inline-block text-neutral-600 transition-colors hover:text-neutral-900"
+          >
+            ← Voltar
+          </Link>
 
-      <div className="flex w-120 gap-2">
-        <input
-          className="w-full rounded-md border border-gray-600 px-2"
-          ref={inputAdicionar}
-          type="text"
-          placeholder="Digite um item"
-          onChange={() => setError("")}
-        />
+          <div className="mb-8 flex items-center justify-between">
+            <h1 className="text-2xl font-medium text-neutral-900">
+              {listName}
+            </h1>
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex cursor-pointer items-center gap-2 rounded-lg bg-neutral-900 px-6 py-3 text-white transition-colors hover:bg-neutral-800"
+            >
+              <Plus size={20} />
+              Adicionar Item
+            </button>
+          </div>
 
-        <button
-          className="cursor-pointer rounded-md bg-gray-800 px-2 text-white transition hover:bg-gray-500"
-          type="submit"
-          onClick={() => adicionarElementoNaLista()}
-        >
-          Adicionar
-        </button>
+          <div className="space-y-2">
+            {items.length > 0 ? (
+              items.map((item) => (
+                <ListItem
+                  key={item.id}
+                  item={item}
+                  setProducts={setItems}
+                  shareId={shareId}
+                  setError={setError}
+                />
+              ))
+            ) : (
+              <p className="text-neutral-500">Sua lista está vazia!</p>
+            )}
+          </div>
+        </div>
       </div>
 
-      {items.length > 0 ? (
-        <ul className="flex w-full flex-col gap-2">
-          {items.map((product) => {
-            return (
-              <ListItem
-                key={product.id}
-                item={product}
-                setProducts={setItems}
-                shareId={shareId}
-                setError={setError}
-              />
-            );
-          })}
-        </ul>
-      ) : (
-        <p className="text-xl">Sua lista esta vazia!</p>
-      )}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+          <div className="mx-6 w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
+            <button
+              onClick={() => {
+                setShowModal(false);
+                setError("");
+              }}
+              className="mb-6 text-neutral-600 transition-colors hover:text-neutral-900"
+            >
+              <ArrowLeft size={24} />
+            </button>
 
-      {erro && <p className="w-full text-sm text-red-500">{erro}</p>}
-    </form>
+            <h2 className="mb-6 text-neutral-900">Novo Item</h2>
+
+            <input
+              type="text"
+              ref={inputAdicionar}
+              onKeyDown={(e) => e.key === "Enter" && adicionarElementoNaLista()}
+              placeholder="Nome do item"
+              autoFocus
+              className="mb-6 w-full rounded-lg border border-neutral-200 px-4 py-3 focus:border-neutral-400 focus:outline-none"
+              onChange={() => setError("")}
+            />
+
+            {erro && <p className="mb-4 font-medium text-red-600">{erro}</p>}
+
+            <button
+              onClick={adicionarElementoNaLista}
+              className="w-full cursor-pointer rounded-lg bg-neutral-900 py-3 text-white transition-colors hover:bg-neutral-800"
+            >
+              Adicionar
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
