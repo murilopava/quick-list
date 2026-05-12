@@ -4,29 +4,20 @@ import { useNavigate } from "react-router-dom";
 
 interface CreatePropList {
   list: List;
-  listArray: List[];
   items: Item[];
-  setListArray: React.Dispatch<SetStateAction<List[]>>;
   setError: React.Dispatch<SetStateAction<string>>;
+  setShowModalDelete: React.Dispatch<SetStateAction<boolean>>;
+  setListToDelete: React.Dispatch<SetStateAction<List | null>>;
 }
 
 const Lists = ({
   list,
-  listArray,
   items,
-  setListArray,
   setError,
+  setShowModalDelete,
+  setListToDelete,
 }: CreatePropList) => {
   const navigate = useNavigate();
-
-  const removerLista = () => {
-    const newList = [...listArray];
-    const listUpdated = newList.filter((actualList) => {
-      return actualList.shareId !== list.shareId;
-    });
-
-    setListArray(listUpdated);
-  };
 
   const enterList = async () => {
     try {
@@ -59,7 +50,8 @@ const Lists = ({
           className={`h-9 cursor-pointer rounded-md bg-red-600 px-2 text-white transition group-hover:bg-red-600 hover:bg-red-700!`}
           onClick={(e) => {
             e.stopPropagation();
-            removerLista();
+            setShowModalDelete(true);
+            setListToDelete(list);
           }}
         >
           Remover

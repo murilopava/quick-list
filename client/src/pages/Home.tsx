@@ -3,6 +3,7 @@ import Lists from "../components/Lists";
 import validateLists from "../utils/validateLists";
 import { List } from "../types";
 import { ArrowLeft, Plus } from "lucide-react";
+import toast from "react-hot-toast";
 
 function Home() {
   const [listArray, setListArray] = useState<List[]>(() => {
@@ -10,7 +11,9 @@ function Home() {
   });
 
   const [showModalCreate, setShowModalCreate] = useState(false);
-  const [showModelAdd, setShowModalAdd] = useState(false);
+  const [showModalAdd, setShowModalAdd] = useState(false);
+  const [showModalDelete, setShowModalDelete] = useState(false);
+  const [listToDelete, setListToDelete] = useState<List | null>(null);
   const [error, setError] = useState<string>("");
 
   const inputValue = useRef<HTMLInputElement>(null);
@@ -46,6 +49,8 @@ function Home() {
         ...listArray,
         { shareId, name, items, createdAt, updatedAt },
       ]);
+
+      toast.success("Lista criada com sucesso!");
 
       if (inputValue.current) {
         inputValue.current.value = "";
@@ -86,6 +91,8 @@ function Home() {
         { shareId, name, items, createdAt, updatedAt },
       ]);
 
+      toast.success("Lista adicionada com sucesso!");
+
       if (inputValue.current) {
         inputValue.current.value = "";
       }
@@ -94,6 +101,14 @@ function Home() {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const deleteList = () => {
+    setListArray((prev) =>
+      prev.filter((list) => list.shareId !== listToDelete?.shareId),
+    );
+    setShowModalDelete(false);
+    setListToDelete(null);
   };
 
   return (
@@ -127,10 +142,10 @@ function Home() {
               <Lists
                 key={list.shareId}
                 list={list}
-                listArray={listArray}
                 items={list.items}
-                setListArray={setListArray}
                 setError={setError}
+                setShowModalDelete={setShowModalDelete}
+                setListToDelete={setListToDelete}
               ></Lists>
             ))}
           </div>
@@ -171,7 +186,7 @@ function Home() {
         </div>
       )}
 
-      {showModelAdd && (
+      {showModalAdd && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
           <div className="mx-6 w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
             <button
@@ -201,6 +216,40 @@ function Home() {
             >
               Adicionar
             </button>
+          </div>
+        </div>
+      )}
+      {showModalDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+          <div className="mx-6 w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
+            <button
+              onClick={() => (setShowModalDelete(false), setError(""))}
+              className="mb-6 text-neutral-600 transition-colors hover:text-neutral-900"
+            >
+              <ArrowLeft size={24} />
+            </button>
+
+            <h2 className="mb-6 font-bold text-neutral-900">
+              Deseja mesmo deletar esta lista das suas listas?
+            </h2>
+
+            <div className="flex gap-4">
+              <button
+                onClick={() => deleteList()}
+                className="w-full cursor-pointer rounded-lg bg-red-500 py-3 text-white transition-colors hover:bg-red-700"
+              >
+                Sim
+              </button>
+
+              <button
+                onClick={() => {
+                  (setShowModalDelete(false), setListToDelete(null));
+                }}
+                className="w-full cursor-pointer rounded-lg bg-neutral-100 py-3 text-black transition-colors hover:bg-neutral-300"
+              >
+                Não
+              </button>
+            </div>
           </div>
         </div>
       )}
