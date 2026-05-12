@@ -3,6 +3,8 @@ import { List } from "../types";
 export default async function validateLists(input: string, list: List[]) {
   if (input === "") {
     return "O campo não pode estar vazio.";
+  } else if (input.length > 35) {
+    return "Nome da lista é muito grande!";
   } else if (
     list.some((list) => list.shareId.toLowerCase() === input.toLowerCase())
   ) {
