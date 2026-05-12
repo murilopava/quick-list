@@ -1,5 +1,6 @@
 import React from "react";
 import { Item } from "../types";
+import { Minus, Plus, Trash2 } from "lucide-react";
 
 interface ListItemProps {
   item: Item;
@@ -9,7 +10,7 @@ interface ListItemProps {
 }
 
 const ListItem = ({
-  item: item,
+  item,
   setProducts: setItems,
   shareId,
   setError,
@@ -30,9 +31,7 @@ const ListItem = ({
     try {
       await fetch(`http://localhost:3333/lists/${shareId}/items/${item.id}`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ quant: newQuant }),
       });
 
@@ -48,9 +47,7 @@ const ListItem = ({
     try {
       await fetch(`http://localhost:3333/lists/${shareId}/items/${item.id}`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isPurchased: newState }),
       });
 
@@ -65,66 +62,58 @@ const ListItem = ({
   };
 
   return (
-    <>
-      <li className="align-items-center flex w-full gap-2">
-        <label htmlFor="quant" className="flex w-full min-w-0 items-center">
-          <p
-            className={`max-w-65 px-2 text-xl wrap-break-word ${item.isPurchased ? "text-gray-500 line-through decoration-4" : ""}`}
-          >
-            {item.name}
-          </p>
-        </label>
+    <li className="flex items-center gap-4 rounded-lg border border-neutral-200 bg-white p-4">
+      <input
+        type="checkbox"
+        checked={item.isPurchased}
+        onChange={() => updateItemState(!item.isPurchased)}
+        className="h-5 w-5 flex-shrink-0 cursor-pointer rounded border-neutral-300"
+      />
 
-        <div className="flex items-center gap-2">
-          <button
-            className={`h-6 w-6 rounded-full transition-colors ${item.isPurchased ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"} cursor-pointer`}
-            onClick={
-              item.isPurchased
-                ? async () => await updateItemState(false)
-                : async () => await updateItemState(true)
+      <span
+        className={`flex-1 ${item.isPurchased ? "text-neutral-400 line-through" : "text-neutral-900"}`}
+      >
+        {item.name}
+      </span>
+
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => updateQuant(item.quant - 1)}
+          disabled={item.quant <= 1}
+          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-neutral-100 transition-colors hover:bg-neutral-200 disabled:cursor-not-allowed"
+        >
+          <Minus
+            size={16}
+            className={
+              item.quant <= 1 ? "text-neutral-300" : "text-neutral-700"
             }
-          >
-            {item.isPurchased ? "✔️" : "❌"}
-          </button>
-
-          <button
-            className={`rounded-md ${item.isPurchased ? "cursor-pointer bg-red-600 transition hover:bg-red-500" : "cursor-not-allowed bg-gray-500"} px-2 text-white`}
-            disabled={!item.isPurchased}
-            onClick={() => {
-              setError("");
-              removeItemList();
-            }}
-          >
-            Remover
-          </button>
-
-          <input
-            className="align-center w-10 rounded-sm border border-gray-300 p-0 text-center"
-            type="number"
-            value={item.quant}
-            onChange={(e) => updateQuant(Number(e.target.value))}
-            max={20}
-            min={0}
-            name="quant"
-            id="quantidade"
-            onKeyDown={(e) => e.preventDefault()}
           />
+        </button>
 
-          <button
-            className="cursor-pointer rounded-md bg-blue-600 px-2 font-bold text-white transition hover:bg-blue-500"
-            onClick={() => updateQuant(item.quant + 1)}
-          >
-            +
-          </button>
-          <button
-            className="cursor-pointer rounded-md bg-blue-600 px-2 font-bold text-white transition hover:bg-blue-500"
-            onClick={() => updateQuant(item.quant - 1)}
-          >
-            -
-          </button>
-        </div>
-      </li>
-    </>
+        <span className="w-8 text-center text-neutral-900">{item.quant}</span>
+
+        <button
+          onClick={() => updateQuant(item.quant + 1)}
+          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-neutral-100 transition-colors hover:bg-neutral-200"
+        >
+          <Plus size={16} className="text-neutral-700" />
+        </button>
+
+        <button
+          onClick={() => {
+            setError("");
+            removeItemList();
+          }}
+          disabled={!item.isPurchased}
+          className="ml-2 flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 transition-colors hover:bg-red-100 disabled:cursor-not-allowed disabled:bg-neutral-100"
+        >
+          <Trash2
+            size={16}
+            className={item.isPurchased ? "text-red-600" : "text-neutral-300"}
+          />
+        </button>
+      </div>
+    </li>
   );
 };
 
