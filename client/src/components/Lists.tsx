@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 interface CreatePropList {
   list: List;
-  items: Item[];
   setError: React.Dispatch<SetStateAction<string>>;
   setShowModalDelete: React.Dispatch<SetStateAction<boolean>>;
   setListToDelete: React.Dispatch<SetStateAction<List | null>>;
@@ -12,19 +11,27 @@ interface CreatePropList {
 
 const Lists = ({
   list,
-  items,
   setError,
   setShowModalDelete,
   setListToDelete,
 }: CreatePropList) => {
   const navigate = useNavigate();
 
+  const formatDate = (dataISO: string) => {
+    const date = new Date(dataISO);
+    return date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
   const enterList = async () => {
     try {
-      const response =
-        (await fetch(`http://localhost:3333/lists/${list.shareId}`)) ??
-        undefined;
-      if (response.status == 404) {
+      const response = await fetch(
+        `http://localhost:3333/lists/${list.shareId}`,
+      );
+      if (response.status === 404) {
         setError("Lista não encontrada");
         return;
       }
@@ -35,19 +42,15 @@ const Lists = ({
     }
   };
 
-  console.log(list.shareId);
   return (
-    <>
-      <li
-        className="flex cursor-pointer justify-between rounded-lg border border-neutral-200 bg-white p-6 font-medium transition-colors hover:border-neutral-300 hover:bg-gray-100"
-        onClick={() => enterList()}
-      >
-        <div className="flex-col items-center">
-          <h2 className="text-neutral-900">{list.name}</h2>
-          <span>{items?.length ?? 0} itens </span>
-        </div>
+    <li
+      className="block cursor-pointer rounded-lg border border-neutral-200 bg-white p-6 transition-colors hover:border-neutral-300"
+      onClick={() => enterList()}
+    >
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="font-medium text-neutral-900">{list.name}</h2>
         <button
-          className={`h-9 cursor-pointer rounded-md bg-red-600 px-2 text-white transition group-hover:bg-red-600 hover:bg-red-700!`}
+          className="cursor-pointer rounded-md bg-red-600 px-3 py-1 text-sm text-white transition hover:bg-red-700"
           onClick={(e) => {
             e.stopPropagation();
             setShowModalDelete(true);
@@ -56,8 +59,13 @@ const Lists = ({
         >
           Remover
         </button>
-      </li>
-    </>
+      </div>
+
+      <div className="flex gap-4 text-sm text-neutral-400">
+        <span>Criada: {formatDate(list.createdAt)}</span>
+        <span>Atualizada: {formatDate(list.updatedAt)}</span>
+      </div>
+    </li>
   );
 };
 

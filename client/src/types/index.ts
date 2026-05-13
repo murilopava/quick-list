@@ -9,7 +9,6 @@ export interface Item {
 export interface List {
   shareId: string;
   name: string;
-  items: Item[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }

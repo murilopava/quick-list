@@ -42,13 +42,9 @@ function Home() {
         body: JSON.stringify({ name: inputValue.current?.value }),
       });
 
-      const { shareId, name, items, createdAt, updatedAt } =
-        await response.json();
+      const { shareId, name, createdAt, updatedAt } = await response.json();
 
-      setListArray([
-        ...listArray,
-        { shareId, name, items, createdAt, updatedAt },
-      ]);
+      setListArray([...listArray, { shareId, name, createdAt, updatedAt }]);
 
       toast.success("Lista criada com sucesso!");
 
@@ -79,17 +75,13 @@ function Home() {
         `http://localhost:3333/lists/${inputValue.current?.value}`,
       );
 
-      const { name, shareId, items, createdAt, updatedAt } =
-        await response.json();
+      const { name, shareId, createdAt, updatedAt } = await response.json();
 
       if (shareId === undefined) {
         throw "Lista não encontrada";
       }
 
-      setListArray([
-        ...listArray,
-        { shareId, name, items, createdAt, updatedAt },
-      ]);
+      setListArray([...listArray, { shareId, name, createdAt, updatedAt }]);
 
       toast.success("Lista adicionada com sucesso!");
 
@@ -142,7 +134,6 @@ function Home() {
               <Lists
                 key={list.shareId}
                 list={list}
-                items={list.items}
                 setError={setError}
                 setShowModalDelete={setShowModalDelete}
                 setListToDelete={setListToDelete}

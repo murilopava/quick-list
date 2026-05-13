@@ -32,7 +32,7 @@ function Items() {
 
   const inputAdicionar = useRef<HTMLInputElement>(null);
 
-  const adicionarElementoNaLista = async () => {
+  const addItem = async () => {
     const error = validateItems(inputAdicionar.current?.value ?? "", items);
 
     if (error) {
@@ -144,7 +144,7 @@ function Items() {
             <input
               type="text"
               ref={inputAdicionar}
-              onKeyDown={(e) => e.key === "Enter" && adicionarElementoNaLista()}
+              onKeyDown={(e) => e.key === "Enter" && addItem()}
               placeholder="Nome do item"
               autoFocus
               className="mb-6 w-full rounded-lg border border-neutral-200 px-4 py-3 focus:border-neutral-400 focus:outline-none"
@@ -154,7 +154,7 @@ function Items() {
             {erro && <p className="mb-4 font-medium text-red-600">{erro}</p>}
 
             <button
-              onClick={adicionarElementoNaLista}
+              onClick={addItem}
               className="w-full cursor-pointer rounded-lg bg-neutral-900 py-3 text-white transition-colors hover:bg-neutral-800"
             >
               Adicionar
