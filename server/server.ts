@@ -6,7 +6,7 @@ import itemsRoutes from "./routes/items.js";
 const server = fastify();
 
 server.register(cors, {
-  origin: "*",
+  origin: ["https://quick-list-eight.vercel.app"],
   methods: ["POST", "GET", "PATCH", "DELETE"],
 });
 
