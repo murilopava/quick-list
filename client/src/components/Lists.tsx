@@ -29,7 +29,7 @@ const Lists = ({
   const enterList = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3333/lists/${list.shareId}`,
+        `${import.meta.env.VITE_API_URL}/lists/${list.shareId}`,
       );
       if (response.status === 404) {
         setError("Lista não encontrada");

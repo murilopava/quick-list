@@ -34,7 +34,7 @@ function Home() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3333/lists`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/lists`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,7 +72,7 @@ function Home() {
     try {
       console.log(inputValue.current?.value);
       const response = await fetch(
-        `http://localhost:3333/lists/${inputValue.current?.value}`,
+        `${import.meta.env.VITE_API_URL}/lists/${inputValue.current?.value}`,
       );
 
       const { name, shareId, createdAt, updatedAt } = await response.json();

@@ -17,7 +17,9 @@ function Items() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`http://localhost:3333/lists/${shareId}`);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/lists/${shareId}`,
+        );
         const data = await response.json();
 
         setListName(data.name);
@@ -42,7 +44,7 @@ function Items() {
 
     try {
       const response = await fetch(
-        `http://localhost:3333/lists/${shareId}/items`,
+        `${import.meta.env.VITE_API_URL}/lists/${shareId}/items`,
         {
           method: "POST",
           headers: {
