@@ -1,14 +1,14 @@
 # 📋💨 Quick List
 
-Uma aplicação web fullstack para criar e gerenciar listas de compras compartilháveis.
+Uma aplicação web fullstack para criar e gerenciar listas compartilháveis.
 
-🌐 **Site:** https://murilopava.github.io/quick-list/
+🌐 **Site:** https://quick-list-eight.vercel.app/lists
 
 ---
 
 ## Sobre o Projeto
 
-O Quick List é um projeto fullstack desenvolvido para praticar conceitos modernos de desenvolvimento web. A aplicação permite criar listas, adicionar e gerenciar items, e compartilhar listas com outras pessoas através de um código único — sem necessidade de cadastro ou autenticação.
+O Quick List é um projeto fullstack desenvolvido para praticar conceitos modernos de desenvolvimento web. A aplicação permite criar listas, adicionar e gerenciar itens, e compartilhar listas com outras pessoas através de um código único — sem necessidade de cadastro ou autenticação.
 
 Este projeto foi criado com fins educacionais, focando em:
 
@@ -19,7 +19,7 @@ Este projeto foi criado com fins educacionais, focando em:
 - Integração frontend-backend com Fetch API
 - Persistência local com localStorage
 - Compartilhamento de listas via código único (NanoID)
-- Ótimas práticas de desenvolvimento fullstack
+- Boas práticas de desenvolvimento fullstack
 
 ---
 
@@ -28,22 +28,24 @@ Este projeto foi criado com fins educacionais, focando em:
 ### Gerenciamento de Listas
 - **Criar lista** — cria uma nova lista e gera automaticamente um código único de compartilhamento
 - **Entrar numa lista existente** — acessa uma lista digitando o código compartilhado por outra pessoa
-- **Remover lista** — remove a lista do dispositivo local
-- **Histórico local** — listas acessadas ficam salvas no dispositivo via localStorage, com nome e data de criação
-- **Compartilhamento** — qualquer pessoa com o código pode visualizar e editar a lista
+- **Remover lista** — remove a lista do dispositivo local com confirmação
+- **Histórico local** — listas acessadas ficam salvas no dispositivo via localStorage, com nome e datas
+- **Compartilhamento** — qualquer pessoa com o link pode visualizar e editar a lista
 
-### Gerenciamento de Items
+### Gerenciamento de Itens
 - **Adicionar item** — adiciona itens à lista com validação de campo vazio e duplicatas
 - **Marcar como comprado** — alterna o status do item com efeito visual de tachado
 - **Controle de quantidade** — incrementa ou decrementa a quantidade com botões + e −
 - **Remover item** — remove o item da lista (disponível apenas após marcar como comprado)
 - **Persistência em banco** — todos os itens são salvos no PostgreSQL em tempo real
+- **Copiar link** — copia o link da lista para compartilhar com outras pessoas
 
-### Validações
+### Validações e Feedback
 - Campo vazio não é aceito
 - Itens duplicados são bloqueados (comparação case-insensitive)
 - Lista inexistente retorna erro 404
-- Feedback visual de erros ao usuário
+- Notificações de sucesso e erro com toast notifications
+- Confirmação antes de remover uma lista
 
 ---
 
@@ -55,6 +57,8 @@ Este projeto foi criado com fins educacionais, focando em:
 - **React Router** — navegação entre páginas
 - **Tailwind CSS** — estilização
 - **Vite** — bundler e servidor de desenvolvimento
+- **Lucide React** — ícones
+- **React Hot Toast** — notificações
 
 ### Backend
 - **Node.js** — ambiente de execução
@@ -63,6 +67,11 @@ Este projeto foi criado com fins educacionais, focando em:
 - **Prisma ORM** — acesso ao banco de dados
 - **PostgreSQL** — banco de dados relacional
 - **NanoID** — geração de códigos únicos de compartilhamento
+
+### Infraestrutura
+- **Vercel** — hospedagem do frontend
+- **Railway** — hospedagem do backend
+- **Neon** — banco de dados PostgreSQL na nuvem
 
 ---
 
@@ -101,53 +110,7 @@ server/                  # Backend Node.js
 | Rota | Descrição |
 |------|-----------|
 | `/lists` | Home — listas salvas no dispositivo |
-| `/items/:shareId` | Itens da lista |
-
----
-
-## Como Usar
-
-### Pré-requisitos
-- Node.js 18+
-- PostgreSQL instalado e rodando
-
-### Instalação
-
-Clone o repositório:
-```bash
-git clone https://github.com/murilopava/quick-list.git
-cd quick-list
-```
-
-**Backend:**
-```bash
-cd server
-npm install
-```
-
-Crie o arquivo `.env` na pasta `server`:
-```env
-DATABASE_URL="postgresql://usuario:senha@localhost:5432/quicklist"
-```
-
-Rode as migrations:
-```bash
-npx prisma migrate dev
-```
-
-Inicie o servidor:
-```bash
-npm run dev
-```
-
-**Frontend:**
-```bash
-cd client
-npm install
-npm run dev
-```
-
-Acesse `http://localhost:5173` no navegador.
+| `/lists/:shareId` | Itens da lista |
 
 ---
 
@@ -155,10 +118,10 @@ Acesse `http://localhost:5173` no navegador.
 
 1. O usuário acessa a Home e cria uma nova lista digitando um nome
 2. A lista é criada no banco e um código único é gerado automaticamente
-3. O código é salvo no localStorage do dispositivo
-4. O usuário é redirecionado para a lista e pode adicionar itens
-5. Para compartilhar, basta passar o código para outra pessoa
-6. Qualquer pessoa com o código pode acessar e editar a lista
+3. A lista é salva no localStorage do dispositivo com nome e datas
+4. O usuário acessa a lista e pode adicionar itens
+5. Para compartilhar, basta copiar o link da lista
+6. Qualquer pessoa com o link pode acessar e editar a lista em tempo real
 
 ---
 
@@ -167,6 +130,3 @@ Acesse `http://localhost:5173` no navegador.
 Desenvolvido por **Murilo Pavanello**
 
 > Projeto desenvolvido para fins de estudo e aprendizado de desenvolvimento fullstack.
-
-
-Logo o projeto inteiro será hospedado, incluindo front-end, back-end e banco de dados.
