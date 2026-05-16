@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Item } from "../types";
 import { Minus, Plus, Trash2 } from "lucide-react";
 
@@ -16,6 +16,8 @@ const ListItem = ({
   setError,
 }: ListItemProps) => {
   const removeItemList = async () => {
+    setItems((prev) => prev.filter((p) => p.id !== item.id));
+
     try {
       await fetch(
         `${import.meta.env.VITE_API_URL}/lists/${shareId}/items/${item.id}`,
@@ -23,33 +25,47 @@ const ListItem = ({
           method: "DELETE",
         },
       );
-
-      setItems((prev) => prev.filter((p) => p.id !== item.id));
     } catch (err) {
-      console.log(err);
+      setItems((prev) => [...prev, item]);
+      setError("Erro ao deletar item.");
     }
   };
 
-  const updateQuant = async (newQuant: number) => {
-    try {
-      await fetch(
-        `${import.meta.env.VITE_API_URL}/lists/${shareId}/items/${item.id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ quant: newQuant }),
-        },
-      );
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-      setItems((prev) =>
-        prev.map((p) => (p.id === item.id ? { ...p, quant: newQuant } : p)),
-      );
-    } catch (err) {
-      console.log(err);
-    }
+  const updateQuant = (newQuant: number) => {
+    const prevQuant = item.quant;
+
+    setItems((prev) =>
+      prev.map((p) => (p.id === item.id ? { ...p, quant: newQuant } : p)),
+    );
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    debounceRef.current = setTimeout(async () => {
+      try {
+        await fetch(
+          `${import.meta.env.VITE_API_URL}/lists/${shareId}/items/${item.id}`,
+          {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ quant: newQuant }),
+          },
+        );
+      } catch (err) {
+        setItems((prev) =>
+          prev.map((p) => (p.id === item.id ? { ...p, quant: prevQuant } : p)),
+        );
+        setError("Erro ao atualizar");
+      }
+    }, 500);
   };
 
   const updateItemState = async (newState: boolean) => {
+    setItems((prev) =>
+      prev.map((p) => (p.id === item.id ? { ...p, isPurchased: newState } : p)),
+    );
+
     try {
       await fetch(
         `${import.meta.env.VITE_API_URL}/lists/${shareId}/items/${item.id}`,
@@ -59,14 +75,14 @@ const ListItem = ({
           body: JSON.stringify({ isPurchased: newState }),
         },
       );
-
+    } catch (err) {
       setItems((prev) =>
         prev.map((p) =>
-          p.id === item.id ? { ...p, isPurchased: newState } : p,
+          p.id === item.id ? { ...p, isPurchased: item.isPurchased } : p,
         ),
       );
-    } catch (err) {
-      console.log(err);
+
+      setError("Erro ao atualizar estado do produto");
     }
   };
 

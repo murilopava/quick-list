@@ -33,6 +33,8 @@ function Home() {
       return;
     }
 
+    const toastId = toast.loading("Criando lista...");
+
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/lists`, {
         method: "POST",
@@ -46,7 +48,7 @@ function Home() {
 
       setListArray([...listArray, { shareId, name, createdAt, updatedAt }]);
 
-      toast.success("Lista criada com sucesso!");
+      toast.success("Lista criada com sucesso!", { id: toastId });
 
       if (inputValue.current) {
         inputValue.current.value = "";
@@ -54,7 +56,7 @@ function Home() {
 
       setShowModalCreate(false);
     } catch (err) {
-      console.log(err);
+      toast.error("Erro ao criar lista", { id: toastId });
     }
   };
 
@@ -68,6 +70,8 @@ function Home() {
       setError(error);
       return;
     }
+
+    const toastId = toast.loading("Criando lista...");
 
     try {
       console.log(inputValue.current?.value);
@@ -83,7 +87,7 @@ function Home() {
 
       setListArray([...listArray, { shareId, name, createdAt, updatedAt }]);
 
-      toast.success("Lista adicionada com sucesso!");
+      toast.success("Lista adicionada com sucesso!", { id: toastId });
 
       if (inputValue.current) {
         inputValue.current.value = "";
@@ -91,7 +95,7 @@ function Home() {
 
       setShowModalAdd(false);
     } catch (err) {
-      console.log(err);
+      toast.error("Erro ao criar lista", { id: toastId });
     }
   };
 
