@@ -32,14 +32,23 @@ function Items() {
     fetchProducts();
   }, [shareId]);
 
-  const inputAdicionar = useRef<HTMLInputElement>(null);
+  const inputAdd = useRef<HTMLInputElement>(null);
 
   const addItem = async () => {
-    const error = validateItems(inputAdicionar.current?.value ?? "", items);
+    const error = validateItems(inputAdd.current?.value ?? "", items);
 
     if (error) {
       setError(error);
       return;
+    }
+
+    const name = inputAdd.current?.value ?? "";
+    const toastId = toast.loading("Adicionando...");
+
+    if (inputAdd.current) {
+      inputAdd.current.value = "";
+      setShowModal(false);
+      setError("");
     }
 
     try {
@@ -50,7 +59,7 @@ function Items() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ name: inputAdicionar.current?.value }),
+          body: JSON.stringify({ name }),
         },
       );
 
@@ -58,14 +67,9 @@ function Items() {
 
       setItems((prev) => [...prev, newItem]);
 
-      if (inputAdicionar.current) {
-        inputAdicionar.current.value = "";
-      }
-
-      setShowModal(false);
-      setError("");
+      toast.success("Item adicionado com sucesso!", { id: toastId });
     } catch (err) {
-      console.log(err);
+      toast.error("Falha ao adicionar item.", { id: toastId });
     }
   };
 
@@ -145,7 +149,7 @@ function Items() {
 
             <input
               type="text"
-              ref={inputAdicionar}
+              ref={inputAdd}
               onKeyDown={(e) => e.key === "Enter" && addItem()}
               placeholder="Nome do item"
               autoFocus

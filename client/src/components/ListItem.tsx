@@ -82,7 +82,7 @@ const ListItem = ({
         ),
       );
 
-      setError("Erro ao atualizar estado do produto");
+      setError("Erro ao atualizar estado do item");
     }
   };
 
